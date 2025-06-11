@@ -6,34 +6,11 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="/app.js" defer></script>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    #chat { display: none; }
-    #mensajes { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
-    #usuarios { margin-top: 10px; }
-    .mensaje { margin-bottom: 5px; }
-  </style>
-</head>
-<body>
-
-  <h1>Mi Chat Seguro</h1>
-
-  <div id="auth">
-    <h2>Iniciar Sesión</h2>
-    <input id="email" placeholder="Email" /><br/>
-    <input id="password" placeholder="Contraseña" type="password" /><br/>
-    <button id="btnLogin">Ingresar</button>
-    <button id="btnRegister">Registrarse</button>
-    <div id="auth-error" style="color:red;"></div>
-  </div>
-
-  <h2>Chat</h2>
-  <div id="usuarios"></div>
-  <h3>Conversando con: <span id="nombreReceptor">Todos</span></h3>
-
-  <div id="mensajes"></div>
-
-  <style>
-    body { font-family: sans-serif; padding: 20px; background-color: #f0f2f5; }
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f0f2f5;
+    }
     #chat { display: none; }
     #mensajes {
       border: 1px solid #ccc;
@@ -42,6 +19,7 @@
       overflow-y: auto;
       background: white;
       border-radius: 8px;
+      margin-bottom: 10px;
     }
     .mensaje {
       margin-bottom: 10px;
@@ -60,8 +38,40 @@
       margin-left: auto;
     }
   </style>
+</head>
+<body>
 
+  <h1>Mi Chat Seguro</h1>
 
+  <!-- Login/Register -->
+  <div id="auth">
+    <h2>Iniciar Sesión</h2>
+    <input id="email" placeholder="Email" /><br/>
+    <input id="password" placeholder="Contraseña" type="password" /><br/>
+    <button id="btnLogin">Ingresar</button>
+    <button id="btnRegister">Registrarse</button>
+    <div id="auth-error" style="color:red;"></div>
+  </div>
+
+  <!-- Chat -->
+  <div id="chat">
+    <h2>Chat</h2>
+
+    <div id="usuarios"></div>
+
+    <h3>Conversando con: <span id="nombreReceptor">Todos</span></h3>
+
+    <div id="mensajes"></div>
+
+    <div style="margin-top:10px;">
+      <input id="texto" placeholder="Escribe tu mensaje" style="width: 70%;" />
+      <button id="btnEnviar">Enviar</button>
+    </div>
+
+    <div style="margin-top:10px;">
+      <button id="btnLogout">Cerrar sesión</button>
+    </div>
+  </div>
 
 </body>
 </html>

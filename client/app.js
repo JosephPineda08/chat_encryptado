@@ -17,7 +17,6 @@ async function login() {
     token = data.token;
     usuarioActual = data.usuario;
 
-    // 🔐 Guardar sesión
     localStorage.setItem('token', token);
     localStorage.setItem('usuario', JSON.stringify(usuarioActual));
 
@@ -43,7 +42,6 @@ async function register() {
     token = data.token;
     usuarioActual = data.usuario;
 
-    // 🔐 Guardar sesión
     localStorage.setItem('token', token);
     localStorage.setItem('usuario', JSON.stringify(usuarioActual));
 
@@ -70,11 +68,6 @@ function iniciarChat() {
   });
 
   cargarUsuarios();
-  btn.onclick = () => {
-  receptorId = u.id;
-  document.getElementById('nombreReceptor').innerText = u.username;
-};
-
 }
 
 async function cargarUsuarios() {
@@ -91,7 +84,7 @@ async function cargarUsuarios() {
       btn.innerText = u.username;
       btn.onclick = () => {
         receptorId = u.id;
-        alert('Ahora estás chateando con ' + u.username);
+        document.getElementById('nombreReceptor').innerText = u.username;
       };
       div.appendChild(btn);
     }
@@ -107,10 +100,22 @@ function enviarMensaje() {
     receptorId: receptorId || null
   });
 
-  agregarMensajeLocal(`Tú`, texto, true);
+  agregarMensajeLocal('Tú', texto, true);
   document.getElementById('texto').value = '';
 }
 
+function agregarMensajeLocal(nombre, texto, esPropio, timestamp = null) {
+  const div = document.createElement('div');
+  div.className = 'mensaje ' + (esPropio ? 'saliente' : 'entrante');
+
+  const hora = new Date(timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  div.innerHTML = `<strong>${nombre}</strong>: ${texto} <br><small>${hora}</small>`;
+  document.getElementById('mensajes').appendChild(div);
+
+  const mensajesDiv = document.getElementById('mensajes');
+  mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
+}
 
 function logout() {
   localStorage.removeItem('token');
@@ -124,7 +129,7 @@ document.getElementById('btnRegister').addEventListener('click', register);
 document.getElementById('btnEnviar').addEventListener('click', enviarMensaje);
 document.getElementById('btnLogout')?.addEventListener('click', logout);
 
-// 🔁 Cargar sesión persistente al iniciar
+// 🔁 Restaurar sesión al recargar
 document.addEventListener('DOMContentLoaded', () => {
   const guardado = localStorage.getItem('token');
   const usuario = localStorage.getItem('usuario');
@@ -134,20 +139,4 @@ document.addEventListener('DOMContentLoaded', () => {
     usuarioActual = JSON.parse(usuario);
     iniciarChat();
   }
-
-
-function agregarMensajeLocal(nombre, texto, esPropio, timestamp = null) {
-  const div = document.createElement('div');
-  div.className = 'mensaje ' + (esPropio ? 'saliente' : 'entrante');
-
-  const hora = new Date(timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-  div.innerHTML = `<strong>${nombre}</strong>: ${texto} <br><small>${hora}</small>`;
-  document.getElementById('mensajes').appendChild(div);
-
-  // Autoscroll al fondo
-  const mensajesDiv = document.getElementById('mensajes');
-  mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
-}
-
 });
