@@ -1,4 +1,3 @@
-// knexfile.js
 require('dotenv').config();
 
 module.exports = {
@@ -15,7 +14,7 @@ module.exports = {
   },
   production: {
     client: 'pg',
-    connection: process.env.DATABASE_URL,
+    connection: process.env.DATABASE_URL, // <- Render usa esta
     migrations: {
       directory: './migrations'
     },
@@ -25,3 +24,4 @@ module.exports = {
     }
   }
 };
+
