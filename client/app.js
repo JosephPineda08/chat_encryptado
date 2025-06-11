@@ -54,14 +54,14 @@ function iniciarChat() {
   });
 
   socket.on('mensaje_recibido', (data) => {
-    // Si el mensaje es del usuario actual, ignorar (ya lo mostramos con "Tú:")
-    if (data.emisor === usuarioActual.username) return;
-
+    if (data.emisor === usuarioActual.username) return; // ← ya se mostró como "Tú"
+    
     const div = document.createElement('div');
     div.className = 'mensaje';
     div.innerText = `De ${data.emisor}: ${data.texto_cifrado}`;
     document.getElementById('mensajes').appendChild(div);
   });
+
 
 
   cargarUsuarios();
