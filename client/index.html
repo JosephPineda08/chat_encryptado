@@ -1,11 +1,38 @@
-<!-- client/index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Chat encriptado</title>
+  <meta charset="UTF-8" />
+  <title>Mi Chat Seguro</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js" defer></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    #chat { display: none; }
+    #mensajes { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+    #usuarios { margin-top: 10px; }
+    .mensaje { margin-bottom: 5px; }
+  </style>
 </head>
 <body>
-  <h1>Bienvenido a Mi Chat Encriptado</h1>
+
+  <h1>Mi Chat Seguro</h1>
+
+  <div id="auth">
+    <h2>Iniciar Sesión</h2>
+    <input id="email" placeholder="Email" /><br/>
+    <input id="password" placeholder="Contraseña" type="password" /><br/>
+    <button id="btnLogin">Ingresar</button>
+    <button id="btnRegister">Registrarse</button>
+    <div id="auth-error" style="color:red;"></div>
+  </div>
+
+  <div id="chat">
+    <h2>Chat</h2>
+    <div id="usuarios"></div>
+    <div id="mensajes"></div>
+    <input id="texto" placeholder="Escribe tu mensaje" />
+    <button id="btnEnviar">Enviar</button>
+  </div>
+
 </body>
 </html>
