@@ -18,9 +18,12 @@ const io = new SocketIOServer(server, {
 });
 
 // Middlewares de seguridad y parseo
+app.set('trust proxy', 1); // ← Habilita confianza en proxy (como Render)
 app.use(cors());
 app.use(express.json());
 const helmet = require('helmet');
+
+
 const rateLimit = require('express-rate-limit');
 app.use(helmet());
 app.use(rateLimit({
