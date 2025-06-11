@@ -80,10 +80,11 @@ io.on('connection', (socket) => {
       });
 
       const payload = {
-        emisor: socket.user.id,
+        emisor: socket.user.username,
         texto_cifrado,
         timestamp: new Date()
       };
+
 
       if (receptorId) {
         io.to(String(receptorId)).emit('mensaje_recibido', payload);
