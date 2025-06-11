@@ -5,39 +5,49 @@
   <title>Mi Chat Seguro</title>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/app.js" defer></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      background-color: #f0f2f5;
-    }
-    #chat { display: none; }
-    #mensajes {
-      border: 1px solid #ccc;
-      padding: 10px;
-      height: 300px;
-      overflow-y: auto;
-      background: white;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    .mensaje {
-      margin-bottom: 10px;
-      max-width: 70%;
-      padding: 8px 12px;
-      border-radius: 12px;
-      word-wrap: break-word;
-    }
-    .mensaje.entrante {
-      background-color: #e4e6eb;
-      text-align: left;
-    }
-    .mensaje.saliente {
-      background-color: #d1e7ff;
-      text-align: right;
-      margin-left: auto;
-    }
-  </style>
+<style>
+  body {
+    font-family: sans-serif;
+    padding: 20px;
+    background-color: #f0f2f5;
+  }
+  #chat { display: none; }
+
+  #mensajes {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 300px;
+    overflow-y: auto;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .mensaje {
+    max-width: 70%;
+    padding: 8px 12px;
+    border-radius: 12px;
+    word-wrap: break-word;
+    display: inline-block;
+    clear: both;
+  }
+
+  .mensaje.entrante {
+    background-color: #e4e6eb;
+    align-self: flex-start;
+    text-align: left;
+  }
+
+  .mensaje.saliente {
+    background-color: #d1e7ff;
+    align-self: flex-end;
+    text-align: right;
+  }
+</style>
+
 </head>
 <body>
 
