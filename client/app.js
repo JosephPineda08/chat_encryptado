@@ -4,17 +4,14 @@ let usuarioActual = null;
 let receptorId = null;
 
 async function login() {
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value.trim();
-
-  if (!email || !password) return mostrarError('Campos obligatorios');
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
 
   const res = await fetch('/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
   });
-
   const data = await res.json();
   if (res.ok) {
     token = data.token;
@@ -25,23 +22,21 @@ async function login() {
 
     iniciarChat();
   } else {
-    mostrarError(data.error || 'Error al iniciar sesión');
+    document.getElementById('auth-error').innerText = data.error || 'Error al iniciar sesión';
   }
 }
 
 async function register() {
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value.trim();
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
   const username = prompt("Ingresa tu nombre de usuario:");
-
-  if (!email || !password || !username) return mostrarError('Todos los campos son obligatorios');
+  if (!username) return;
 
   const res = await fetch('/api/auth/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password, username })
   });
-
   const data = await res.json();
   if (res.ok) {
     token = data.token;
@@ -52,13 +47,13 @@ async function register() {
 
     iniciarChat();
   } else {
-    mostrarError(data.error || 'Error al registrarse');
+    document.getElementById('auth-error').innerText = data.error || 'Error al registrarse';
   }
 }
 
 function iniciarChat() {
   document.getElementById('auth').style.display = 'none';
-  document.getElementById('chat').style.display = 'flex';
+  document.getElementById('chat').style.display = 'block';
 
   socket = io({ auth: { token } });
 
@@ -68,6 +63,7 @@ function iniciarChat() {
 
   socket.on('mensaje_recibido', (data) => {
     if (data.emisor === usuarioActual.username) return;
+
     agregarMensajeLocal(data.emisor, data.texto_cifrado, false, data.timestamp);
   });
 
@@ -80,11 +76,8 @@ async function cargarUsuarios() {
   });
   const usuarios = await res.json();
 
-  const contenedor = document.getElementById('usuarios');
-  const botonesDiv = document.createElement('div');
-  botonesDiv.id = 'lista-usuarios';
-  botonesDiv.innerHTML = '<h3>Enviar a:</h3>';
-
+  const div = document.getElementById('usuarios');
+  div.innerHTML = '<strong>Enviar a:</strong><br />';
   usuarios.forEach(u => {
     if (u.id !== usuarioActual.id) {
       const btn = document.createElement('button');
@@ -93,21 +86,14 @@ async function cargarUsuarios() {
         receptorId = u.id;
         document.getElementById('nombreReceptor').innerText = u.username;
       };
-      botonesDiv.appendChild(btn);
+      div.appendChild(btn);
     }
   });
-
-  // Eliminar lista previa si existe
-  const anterior = document.getElementById('lista-usuarios');
-  if (anterior) contenedor.removeChild(anterior);
-
-  contenedor.insertBefore(botonesDiv, document.getElementById('btnLogout'));
 }
 
 function enviarMensaje() {
-  const input = document.getElementById('texto');
-  const texto = input.value.trim();
-  if (!texto) return;
+  const texto = document.getElementById('texto').value;
+  if (!texto.trim()) return;
 
   socket.emit('mensaje_publico', {
     texto_cifrado: texto,
@@ -115,22 +101,20 @@ function enviarMensaje() {
   });
 
   agregarMensajeLocal('Tú', texto, true);
-  input.value = '';
+  document.getElementById('texto').value = '';
 }
 
 function agregarMensajeLocal(nombre, texto, esPropio, timestamp = null) {
   const div = document.createElement('div');
   div.className = 'mensaje ' + (esPropio ? 'saliente' : 'entrante');
 
-  const hora = new Date(timestamp || Date.now()).toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  const hora = new Date(timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  div.innerHTML = `<strong>${nombre}</strong>: ${texto}<br><small>${hora}</small>`;
-  const contenedor = document.getElementById('mensajes');
-  contenedor.appendChild(div);
-  contenedor.scrollTo({ top: contenedor.scrollHeight, behavior: 'smooth' });
+  div.innerHTML = `<strong>${nombre}</strong>: ${texto} <br><small>${hora}</small>`;
+  document.getElementById('mensajes').appendChild(div);
+
+  const mensajesDiv = document.getElementById('mensajes');
+  mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
 }
 
 function logout() {
@@ -139,19 +123,13 @@ function logout() {
   location.reload();
 }
 
-function mostrarError(msg) {
-  const errorDiv = document.getElementById('auth-error');
-  errorDiv.innerText = msg;
-  setTimeout(() => errorDiv.innerText = '', 4000);
-}
-
-// Asignar eventos
-document.getElementById('btnLogin')?.addEventListener('click', login);
-document.getElementById('btnRegister')?.addEventListener('click', register);
-document.getElementById('btnEnviar')?.addEventListener('click', enviarMensaje);
+// Asociar eventos
+document.getElementById('btnLogin').addEventListener('click', login);
+document.getElementById('btnRegister').addEventListener('click', register);
+document.getElementById('btnEnviar').addEventListener('click', enviarMensaje);
 document.getElementById('btnLogout')?.addEventListener('click', logout);
 
-// Restaurar sesión automáticamente
+// 🔁 Restaurar sesión al recargar
 document.addEventListener('DOMContentLoaded', () => {
   const guardado = localStorage.getItem('token');
   const usuario = localStorage.getItem('usuario');
