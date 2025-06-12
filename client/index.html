@@ -6,7 +6,6 @@
   <title>Mi Chat Seguro</title>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/app.js" defer></script>
-
   <style>
     * {
       box-sizing: border-box;
@@ -84,17 +83,10 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      font-size: 20px;
     }
 
-    /* Contenedor de usuarios + panel */
-    #main {
-      display: flex;
-      flex-direction: row;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    /* Lista de usuarios */
+    /* Contenedor principal */
     #usuarios {
       width: 250px;
       background-color: #f5f6fa;
@@ -126,7 +118,7 @@
       background-color: #dce1e6;
     }
 
-    /* Panel principal */
+    /* Panel de conversación */
     #panel-chat {
       flex: 1;
       display: flex;
@@ -256,25 +248,22 @@
       <div class="icon">⚙️</div>
     </div>
 
-    <!-- Contenedor principal -->
-    <div id="main">
-      <!-- Lista de usuarios -->
-      <div id="usuarios">
-        <h3>Enviar a:</h3>
-        <!-- Botones dinámicos -->
-        <button id="btnLogout">Cerrar sesión</button>
-      </div>
+    <!-- Lista de usuarios -->
+    <div id="usuarios">
+      <h3>Enviar a:</h3>
+      <!-- Botones dinámicos -->
+      <button id="btnLogout">Cerrar sesión</button>
+    </div>
 
-      <!-- Panel de conversación -->
-      <div id="panel-chat">
-        <div id="topbar">
-          Conversando con: <span id="nombreReceptor">Todos</span>
-        </div>
-        <div id="mensajes"></div>
-        <div id="inputArea">
-          <input id="texto" placeholder="Escribe tu mensaje..." />
-          <button id="btnEnviar">Enviar</button>
-        </div>
+    <!-- Panel de conversación -->
+    <div id="panel-chat">
+      <div id="topbar">
+        Conversando con: <span id="nombreReceptor">Todos</span>
+      </div>
+      <div id="mensajes"></div>
+      <div id="inputArea">
+        <input id="texto" placeholder="Escribe tu mensaje..." />
+        <button id="btnEnviar">Enviar</button>
       </div>
     </div>
   </div>
