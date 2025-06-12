@@ -2,244 +2,175 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mi Chat Seguro</title>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/app.js" defer></script>
+
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    /* --- Reset básico --- */
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
+    /* --- Contenedor de login --- */
     #auth {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-      background: #f8f9fa;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      height: 100vh; background: #f8f9fa;
     }
-
     #auth input {
-      margin: 5px 0;
-      padding: 10px;
-      width: 250px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      width: 250px; margin: 5px 0; padding: 10px;
+      border: 1px solid #ccc; border-radius: 6px;
     }
-
     #auth button {
-      margin: 5px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
+      margin: 5px; padding: 10px 20px;
+      border: none; border-radius: 6px;
+      cursor: pointer; font-weight: bold;
     }
+    #btnLogin    { background: #007bff; color: #fff; }
+    #btnRegister { background: #6c757d; color: #fff; }
 
-    #btnLogin {
-      background-color: #007bff;
-      color: white;
-    }
-
-    #btnRegister {
-      background-color: #6c757d;
-      color: white;
-    }
-
+    /* --- Contenedor principal de chat --- */
     #chat {
+      /* ocultar por defecto; JS hará: style.display='flex' */
       display: none;
-      height: 100vh;
-      display: flex;
+      /* flex horizontal */
       flex-direction: row;
+      height: 100vh; width: 100vw;
       overflow: hidden;
     }
 
-    /* Barra lateral */
+    /* --- Barra lateral (íconos) --- */
     #sidebar {
-      width: 80px;
-      background-color: #0d1b2a;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 10px 0;
-      gap: 20px;
-      color: white;
+      flex: 0 0 80px;
+      background: #0d1b2a;
+      display: flex; flex-direction: column;
+      align-items: center; padding: 10px 0;
+      gap: 20px; color: #fff;
     }
-
     #sidebar .icon {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       border-radius: 50%;
-      background-color: #1b263b;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 20px;
+      background: #1b263b;
+      display: flex; justify-content: center; align-items: center;
+      font-size: 20px; cursor: pointer;
     }
 
-    /* Contenedor principal */
+    /* --- Lista de usuarios --- */
     #usuarios {
-      width: 250px;
-      background-color: #f5f6fa;
+      flex: 0 0 250px;
+      background: #f5f6fa;
       padding: 10px;
-      overflow-y: auto;
       border-right: 1px solid #ccc;
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
+      overflow-y: auto;
     }
-
     #usuarios h3 {
-      margin-top: 0;
-      font-size: 16px;
-      color: #333;
+      margin-top: 0; font-size: 16px; color: #333;
     }
-
-    #usuarios button {
+    #usuarios button, #btnLogout {
       width: 100%;
-      background: #e9ecef;
-      border: none;
       padding: 10px;
       margin: 5px 0;
+      border: none;
       border-radius: 10px;
-      cursor: pointer;
+      background: #e9ecef;
       text-align: left;
+      cursor: pointer;
+    }
+    #usuarios button:hover, #btnLogout:hover {
+      background: #dce1e6;
+    }
+    #btnLogout {
+      background: #dc3545; color: #fff;
+      text-align: center;
     }
 
-    #usuarios button:hover {
-      background-color: #dce1e6;
-    }
-
-    /* Panel de conversación */
+    /* --- Panel de conversación --- */
     #panel-chat {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background-color: #e4ebf5;
+      flex: 1 1 auto;
+      display: flex; flex-direction: column;
+      background: #e4ebf5;
       padding: 20px;
       overflow: hidden;
     }
-
     #topbar {
       flex: 0 0 auto;
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 15px;
+      font-size: 18px; font-weight: bold; margin-bottom: 15px;
       color: #2d2d2d;
     }
-
     #mensajes {
       flex: 1 1 auto;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
       gap: 10px;
       padding-right: 10px;
-      min-height: 0;
+      overflow-y: auto;
+      min-height: 0; /* forzar recorte en flex children */
     }
-
     .mensaje {
       max-width: 60%;
       padding: 12px 16px;
       border-radius: 18px;
-      font-size: 14px;
-      position: relative;
       line-height: 1.4;
+      font-size: 14px;
       word-break: break-word;
     }
-
     .mensaje.entrante {
-      background-color: #ffffff;
+      background: #fff;
       align-self: flex-start;
       border-bottom-left-radius: 4px;
     }
-
     .mensaje.saliente {
-      background-color: #4c8bf5;
-      color: white;
+      background: #4c8bf5; color: #fff;
       align-self: flex-end;
       border-bottom-right-radius: 4px;
     }
-
     .mensaje small {
-      font-size: 10px;
-      opacity: 0.6;
       display: block;
       margin-top: 4px;
+      font-size: 10px;
+      opacity: 0.6;
       text-align: right;
     }
 
+    /* --- Área de input --- */
     #inputArea {
       flex: 0 0 auto;
-      display: flex;
-      gap: 10px;
+      display: flex; gap: 10px;
       margin-top: 10px;
     }
-
     #texto {
-      flex: 1;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 25px;
-      outline: none;
-      font-size: 14px;
+      flex: 1; padding: 10px 15px;
+      border: none; border-radius: 25px;
+      outline: none; font-size: 14px;
     }
-
     #btnEnviar {
       padding: 10px 20px;
-      background: #28a745;
-      border: none;
-      color: white;
-      border-radius: 25px;
-      cursor: pointer;
-      font-weight: bold;
+      background: #28a745; color: #fff;
+      border: none; border-radius: 25px;
+      cursor: pointer; font-weight: bold;
     }
-
     #btnEnviar:hover {
-      background-color: #218838;
-    }
-
-    #btnLogout {
-      margin-top: 15px;
-      background-color: #dc3545;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    #btnLogout:hover {
-      background-color: #c82333;
+      background: #218838;
     }
   </style>
 </head>
-
 <body>
   <!-- Login -->
   <div id="auth">
     <h2>Iniciar Sesión</h2>
-    <input id="email" placeholder="Email" type="email" />
-    <input id="password" placeholder="Contraseña" type="password" />
-    <div style="margin-top: 10px;">
+    <input id="email"    type="email"    placeholder="Email"/>
+    <input id="password" type="password" placeholder="Contraseña"/>
+    <div>
       <button id="btnLogin">Ingresar</button>
       <button id="btnRegister">Registrarse</button>
     </div>
-    <div id="auth-error" style="color:red; margin-top: 10px;"></div>
+    <div id="auth-error" style="color:red; margin-top:10px;"></div>
   </div>
 
   <!-- Chat -->
   <div id="chat">
-    <!-- Sidebar -->
+    <!-- Barra lateral -->
     <div id="sidebar">
       <div class="icon">🏠</div>
       <div class="icon">💬</div>
@@ -251,7 +182,7 @@
     <!-- Lista de usuarios -->
     <div id="usuarios">
       <h3>Enviar a:</h3>
-      <!-- Botones dinámicos -->
+      <!-- aquí irán botones de usuarios -->
       <button id="btnLogout">Cerrar sesión</button>
     </div>
 
@@ -262,7 +193,7 @@
       </div>
       <div id="mensajes"></div>
       <div id="inputArea">
-        <input id="texto" placeholder="Escribe tu mensaje..." />
+        <input id="texto" placeholder="Escribe tu mensaje…"/>
         <button id="btnEnviar">Enviar</button>
       </div>
     </div>
