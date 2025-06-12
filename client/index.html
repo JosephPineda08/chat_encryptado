@@ -6,6 +6,7 @@
   <title>Mi Chat Seguro</title>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/app.js" defer></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -59,6 +60,7 @@
       height: 100vh;
       display: flex;
       flex-direction: row;
+      overflow: hidden;
     }
 
     /* Barra lateral */
@@ -84,6 +86,14 @@
       cursor: pointer;
     }
 
+    /* Contenedor de usuarios + panel */
+    #main {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      overflow: hidden;
+    }
+
     /* Lista de usuarios */
     #usuarios {
       width: 250px;
@@ -91,6 +101,8 @@
       padding: 10px;
       overflow-y: auto;
       border-right: 1px solid #ccc;
+      display: flex;
+      flex-direction: column;
     }
 
     #usuarios h3 {
@@ -121,9 +133,11 @@
       flex-direction: column;
       background-color: #e4ebf5;
       padding: 20px;
+      overflow: hidden;
     }
 
     #topbar {
+      flex: 0 0 auto;
       font-weight: bold;
       font-size: 18px;
       margin-bottom: 15px;
@@ -131,12 +145,13 @@
     }
 
     #mensajes {
-      flex: 1;
+      flex: 1 1 auto;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 10px;
       padding-right: 10px;
+      min-height: 0;
     }
 
     .mensaje {
@@ -146,6 +161,7 @@
       font-size: 14px;
       position: relative;
       line-height: 1.4;
+      word-break: break-word;
     }
 
     .mensaje.entrante {
@@ -170,9 +186,10 @@
     }
 
     #inputArea {
+      flex: 0 0 auto;
       display: flex;
       gap: 10px;
-      padding-top: 10px;
+      margin-top: 10px;
     }
 
     #texto {
@@ -239,22 +256,25 @@
       <div class="icon">⚙️</div>
     </div>
 
-    <!-- Lista de usuarios -->
-    <div id="usuarios">
-      <h3>Enviar a:</h3>
-      <!-- Botones dinámicos -->
-      <button id="btnLogout">Cerrar sesión</button>
-    </div>
-
-    <!-- Panel de conversación -->
-    <div id="panel-chat">
-      <div id="topbar">
-        Conversando con: <span id="nombreReceptor">Todos</span>
+    <!-- Contenedor principal -->
+    <div id="main">
+      <!-- Lista de usuarios -->
+      <div id="usuarios">
+        <h3>Enviar a:</h3>
+        <!-- Botones dinámicos -->
+        <button id="btnLogout">Cerrar sesión</button>
       </div>
-      <div id="mensajes"></div>
-      <div id="inputArea">
-        <input id="texto" placeholder="Escribe tu mensaje..." />
-        <button id="btnEnviar">Enviar</button>
+
+      <!-- Panel de conversación -->
+      <div id="panel-chat">
+        <div id="topbar">
+          Conversando con: <span id="nombreReceptor">Todos</span>
+        </div>
+        <div id="mensajes"></div>
+        <div id="inputArea">
+          <input id="texto" placeholder="Escribe tu mensaje..." />
+          <button id="btnEnviar">Enviar</button>
+        </div>
       </div>
     </div>
   </div>
