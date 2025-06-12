@@ -5,167 +5,81 @@
   <title>Mi Chat Seguro</title>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/app.js" defer></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f0f2f5;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+<style>
+  body {
+    font-family: sans-serif;
+    padding: 20px;
+    background-color: #f0f2f5;
+  }
+  #chat { display: none; }
 
-    #auth {
-      text-align: center;
-    }
+  #mensajes {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 300px;
+    overflow-y: auto;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
 
-    #chat {
-      width: 90vw;
-      height: 90vh;
-      display: flex;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
+  .mensaje {
+    max-width: 70%;
+    padding: 8px 12px;
+    border-radius: 12px;
+    word-wrap: break-word;
+    display: inline-block;
+    clear: both;
+  }
 
-    #usuarios {
-      width: 30%;
-      background-color: #ffffff;
-      border-right: 1px solid #ccc;
-      padding: 10px;
-      box-sizing: border-box;
-      overflow-y: auto;
-    }
+  .mensaje.entrante {
+    background-color: #e4e6eb;
+    align-self: flex-start;
+    text-align: left;
+  }
 
-    #usuarios button {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0;
-      background: #e4e6eb;
-      border: none;
-      border-radius: 6px;
-      text-align: left;
-      cursor: pointer;
-    }
+  .mensaje.saliente {
+    background-color: #d1e7ff;
+    align-self: flex-end;
+    text-align: right;
+  }
+</style>
 
-    #usuarios button:hover {
-      background-color: #d8dadf;
-    }
-
-    #panel-chat {
-      width: 70%;
-      background: #f9f9f9;
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-
-    #mensajes {
-      flex: 1;
-      overflow-y: auto;
-      padding: 10px;
-      background: white;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .mensaje {
-      max-width: 70%;
-      padding: 8px 12px;
-      border-radius: 12px;
-      word-wrap: break-word;
-      display: inline-block;
-    }
-
-    .mensaje.entrante {
-      background-color: #e4e6eb;
-      align-self: flex-start;
-      text-align: left;
-    }
-
-    .mensaje.saliente {
-      background-color: #d1e7ff;
-      align-self: flex-end;
-      text-align: right;
-    }
-
-    #inputArea {
-      display: flex;
-      padding-top: 10px;
-    }
-
-    #texto {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-right: 5px;
-    }
-
-    #btnEnviar {
-      padding: 10px 20px;
-      background: #0084ff;
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    #btnEnviar:hover {
-      background-color: #006fd6;
-    }
-
-    #topbar {
-      margin-bottom: 10px;
-    }
-
-    #btnLogout {
-      margin-top: 10px;
-      background-color: #dc3545;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    #btnLogout:hover {
-      background-color: #c82333;
-    }
-  </style>
 </head>
 <body>
 
+  <h1>Mi Chat Seguro</h1>
+
+  <!-- Login/Register -->
   <div id="auth">
     <h2>Iniciar Sesión</h2>
-    <input id="email" placeholder="Email" /><br/><br/>
-    <input id="password" placeholder="Contraseña" type="password" /><br/><br/>
+    <input id="email" placeholder="Email" /><br/>
+    <input id="password" placeholder="Contraseña" type="password" /><br/>
     <button id="btnLogin">Ingresar</button>
     <button id="btnRegister">Registrarse</button>
     <div id="auth-error" style="color:red;"></div>
   </div>
 
+  <!-- Chat -->
   <div id="chat">
-    <div id="usuarios">
-      <h3>Conversaciones</h3>
-      <!-- botones de usuarios se inyectan aquí -->
-      <button id="btnLogout">Cerrar sesión</button>
+    <h2>Chat</h2>
+
+    <div id="usuarios"></div>
+
+    <h3>Conversando con: <span id="nombreReceptor">Todos</span></h3>
+
+    <div id="mensajes"></div>
+
+    <div style="margin-top:10px;">
+      <input id="texto" placeholder="Escribe tu mensaje" style="width: 70%;" />
+      <button id="btnEnviar">Enviar</button>
     </div>
 
-    <div id="panel-chat">
-      <div id="topbar">
-        <h3>Conversando con: <span id="nombreReceptor">Todos</span></h3>
-      </div>
-      <div id="mensajes"></div>
-      <div id="inputArea">
-        <input id="texto" placeholder="Escribe tu mensaje" />
-        <button id="btnEnviar">Enviar</button>
-      </div>
+    <div style="margin-top:10px;">
+      <button id="btnLogout">Cerrar sesión</button>
     </div>
   </div>
 
