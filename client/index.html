@@ -6,138 +6,159 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="/app.js" defer></script>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f0f2f5;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  * {
+    box-sizing: border-box;
+  }
 
-    #auth {
-      text-align: center;
-    }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f0f2f5;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-    #chat {
-      width: 90vw;
-      height: 90vh;
-      display: flex;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
+  #auth {
+    text-align: center;
+  }
 
-    #usuarios {
-      width: 30%;
-      background-color: #ffffff;
-      border-right: 1px solid #ccc;
-      padding: 10px;
-      box-sizing: border-box;
-      overflow-y: auto;
-    }
+  #chat {
+    width: 90vw;
+    height: 90vh;
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    background: white;
+  }
 
-    #usuarios button {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0;
-      background: #e4e6eb;
-      border: none;
-      border-radius: 6px;
-      text-align: left;
-      cursor: pointer;
-    }
+  #usuarios {
+    width: 30%;
+    background-color: #f8f9fa;
+    border-right: 1px solid #ddd;
+    padding: 15px;
+    overflow-y: auto;
+  }
 
-    #usuarios button:hover {
-      background-color: #d8dadf;
-    }
+  #usuarios h3 {
+    margin-top: 0;
+  }
 
-    #panel-chat {
-      width: 70%;
-      background: #f9f9f9;
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
-      box-sizing: border-box;
-    }
+  #usuarios button {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    background: #e9ecef;
+    border: none;
+    border-radius: 6px;
+    text-align: left;
+    cursor: pointer;
+    font-weight: 500;
+  }
 
-    #mensajes {
-      flex: 1;
-      overflow-y: auto;
-      padding: 10px;
-      background: white;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
+  #usuarios button:hover {
+    background-color: #dee2e6;
+  }
 
-    .mensaje {
-      max-width: 70%;
-      padding: 8px 12px;
-      border-radius: 12px;
-      word-wrap: break-word;
-      display: inline-block;
-    }
+  #panel-chat {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    background-color: #edf1f7;
+  }
 
-    .mensaje.entrante {
-      background-color: #e4e6eb;
-      align-self: flex-start;
-      text-align: left;
-    }
+  #topbar {
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
 
-    .mensaje.saliente {
-      background-color: #d1e7ff;
-      align-self: flex-end;
-      text-align: right;
-    }
+  #mensajes {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+  }
 
-    #inputArea {
-      display: flex;
-      padding-top: 10px;
-    }
+  .mensaje {
+    max-width: 65%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    word-wrap: break-word;
+    font-size: 14px;
+    position: relative;
+  }
 
-    #texto {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-right: 5px;
-    }
+  .mensaje.entrante {
+    background-color: #e4e6eb;
+    align-self: flex-start;
+    text-align: left;
+  }
 
-    #btnEnviar {
-      padding: 10px 20px;
-      background: #0084ff;
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+  .mensaje.saliente {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+    text-align: right;
+  }
 
-    #btnEnviar:hover {
-      background-color: #006fd6;
-    }
+  .mensaje small {
+    font-size: 11px;
+    display: block;
+    margin-top: 5px;
+    opacity: 0.6;
+  }
 
-    #topbar {
-      margin-bottom: 10px;
-    }
+  #inputArea {
+    display: flex;
+    padding-top: 12px;
+    gap: 10px;
+  }
 
-    #btnLogout {
-      margin-top: 10px;
-      background-color: #dc3545;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+  #texto {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+  }
 
-    #btnLogout:hover {
-      background-color: #c82333;
-    }
-  </style>
+  #btnEnviar {
+    padding: 10px 20px;
+    background: #28a745;
+    border: none;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  #btnEnviar:hover {
+    background-color: #218838;
+  }
+
+  #btnLogout {
+    margin-top: 15px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  #btnLogout:hover {
+    background-color: #c82333;
+  }
+</style>
+
 </head>
 <body>
 
