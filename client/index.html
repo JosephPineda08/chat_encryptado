@@ -7,11 +7,11 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="/app.js" defer></script>
   <style>
-    /* Reset básico */
+    /* Reset */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; font-family: 'Segoe UI', sans-serif; }
 
-    /* Contenedor de login */
+    /* Login */
     #auth {
       display: flex; flex-direction: column;
       justify-content: center; align-items: center;
@@ -29,15 +29,16 @@
     #btnLogin    { background: #007bff; color: #fff; }
     #btnRegister { background: #6c757d; color: #fff; }
 
-    /* Contenedor principal de chat */
+    /* Contenedor principal */
     #chat {
-      display: none;               /* iniciar oculto */
-      flex-direction: row;         /* forzar fila */
+      /* ahora siempre flex */
+      display: flex;
+      flex-direction: row;
       height: 100vh; width: 100vw;
       overflow: hidden;
     }
 
-    /* Barra lateral de íconos */
+    /* Barra lateral */
     #sidebar {
       flex: 0 0 80px;
       background: #0d1b2a;
@@ -152,8 +153,8 @@
     <div id="auth-error" style="color:red; margin-top:10px;"></div>
   </div>
 
-  <!-- Chat -->
-  <div id="chat">
+  <!-- Chat (oculto inline hasta login) -->
+  <div id="chat" style="display:none;">
     <div id="sidebar">
       <div class="icon">🏠</div>
       <div class="icon">💬</div>
@@ -164,7 +165,7 @@
 
     <div id="usuarios">
       <h3>Enviar a:</h3>
-      <!-- Botones de usuarios generados por JS -->
+      <!-- botones dinámicos -->
       <button id="btnLogout">Cerrar sesión</button>
     </div>
 
@@ -181,7 +182,7 @@
   </div>
 
   <script>
-    // En iniciarChat() usar siempre flex, no block:
+    // En app.js o aquí: usar siempre 'flex'
     function iniciarChat() {
       document.getElementById('auth').style.display = 'none';
       document.getElementById('chat').style.display = 'flex';
