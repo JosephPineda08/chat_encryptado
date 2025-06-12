@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mi Chat Seguro</title>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/app.js" defer></script>
-
   <style>
-    /* --- Reset básico --- */
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; }
+    /* Reset básico */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Segoe UI', sans-serif; }
 
-    /* --- Contenedor de login --- */
+    /* Contenedor de login */
     #auth {
       display: flex; flex-direction: column;
       justify-content: center; align-items: center;
@@ -30,17 +29,15 @@
     #btnLogin    { background: #007bff; color: #fff; }
     #btnRegister { background: #6c757d; color: #fff; }
 
-    /* --- Contenedor principal de chat --- */
+    /* Contenedor principal de chat */
     #chat {
-      /* ocultar por defecto; JS hará: style.display='flex' */
-      display: none;
-      /* flex horizontal */
-      flex-direction: row;
+      display: none;               /* iniciar oculto */
+      flex-direction: row;         /* forzar fila */
       height: 100vh; width: 100vw;
       overflow: hidden;
     }
 
-    /* --- Barra lateral (íconos) --- */
+    /* Barra lateral de íconos */
     #sidebar {
       flex: 0 0 80px;
       background: #0d1b2a;
@@ -56,7 +53,7 @@
       font-size: 20px; cursor: pointer;
     }
 
-    /* --- Lista de usuarios --- */
+    /* Lista de usuarios */
     #usuarios {
       flex: 0 0 250px;
       background: #f5f6fa;
@@ -66,19 +63,17 @@
       overflow-y: auto;
     }
     #usuarios h3 {
-      margin-top: 0; font-size: 16px; color: #333;
+      font-size: 16px; margin-bottom: 10px; color: #333;
     }
-    #usuarios button, #btnLogout {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0;
-      border: none;
-      border-radius: 10px;
-      background: #e9ecef;
-      text-align: left;
-      cursor: pointer;
+    #usuarios button,
+    #btnLogout {
+      width: 100%; padding: 10px;
+      margin: 5px 0; border: none;
+      border-radius: 10px; background: #e9ecef;
+      text-align: left; cursor: pointer;
     }
-    #usuarios button:hover, #btnLogout:hover {
+    #usuarios button:hover,
+    #btnLogout:hover {
       background: #dce1e6;
     }
     #btnLogout {
@@ -86,38 +81,31 @@
       text-align: center;
     }
 
-    /* --- Panel de conversación --- */
+    /* Panel de conversación */
     #panel-chat {
       flex: 1 1 auto;
       display: flex; flex-direction: column;
-      background: #e4ebf5;
-      padding: 20px;
+      background: #e4ebf5; padding: 20px;
       overflow: hidden;
     }
     #topbar {
       flex: 0 0 auto;
-      font-size: 18px; font-weight: bold; margin-bottom: 15px;
-      color: #2d2d2d;
+      font-size: 18px; font-weight: bold;
+      margin-bottom: 15px; color: #2d2d2d;
     }
     #mensajes {
       flex: 1 1 auto;
       display: flex; flex-direction: column;
-      gap: 10px;
-      padding-right: 10px;
-      overflow-y: auto;
-      min-height: 0; /* forzar recorte en flex children */
+      gap: 10px; overflow-y: auto;
+      padding-right: 10px; min-height: 0;
     }
     .mensaje {
-      max-width: 60%;
-      padding: 12px 16px;
-      border-radius: 18px;
-      line-height: 1.4;
-      font-size: 14px;
-      word-break: break-word;
+      max-width: 60%; padding: 12px 16px;
+      border-radius: 18px; line-height: 1.4;
+      font-size: 14px; word-break: break-word;
     }
     .mensaje.entrante {
-      background: #fff;
-      align-self: flex-start;
+      background: #fff; align-self: flex-start;
       border-bottom-left-radius: 4px;
     }
     .mensaje.saliente {
@@ -126,14 +114,12 @@
       border-bottom-right-radius: 4px;
     }
     .mensaje small {
-      display: block;
-      margin-top: 4px;
-      font-size: 10px;
-      opacity: 0.6;
+      display: block; margin-top: 4px;
+      font-size: 10px; opacity: 0.6;
       text-align: right;
     }
 
-    /* --- Área de input --- */
+    /* Área de entrada */
     #inputArea {
       flex: 0 0 auto;
       display: flex; gap: 10px;
@@ -150,9 +136,7 @@
       border: none; border-radius: 25px;
       cursor: pointer; font-weight: bold;
     }
-    #btnEnviar:hover {
-      background: #218838;
-    }
+    #btnEnviar:hover { background: #218838; }
   </style>
 </head>
 <body>
@@ -170,7 +154,6 @@
 
   <!-- Chat -->
   <div id="chat">
-    <!-- Barra lateral -->
     <div id="sidebar">
       <div class="icon">🏠</div>
       <div class="icon">💬</div>
@@ -179,14 +162,12 @@
       <div class="icon">⚙️</div>
     </div>
 
-    <!-- Lista de usuarios -->
     <div id="usuarios">
       <h3>Enviar a:</h3>
-      <!-- aquí irán botones de usuarios -->
+      <!-- Botones de usuarios generados por JS -->
       <button id="btnLogout">Cerrar sesión</button>
     </div>
 
-    <!-- Panel de conversación -->
     <div id="panel-chat">
       <div id="topbar">
         Conversando con: <span id="nombreReceptor">Todos</span>
@@ -198,5 +179,14 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // En iniciarChat() usar siempre flex, no block:
+    function iniciarChat() {
+      document.getElementById('auth').style.display = 'none';
+      document.getElementById('chat').style.display = 'flex';
+      // resto de inicialización...
+    }
+  </script>
 </body>
 </html>
